@@ -1,0 +1,55 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica-Oblique;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww7000\viewh8900\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs48 \cf0 \ul \ulc0 Important parameters\
+
+\f1\i\b0\fs36 \ulnone Mesmerize
+\f2\i0  will extract the important parameters for adjustment. The defaults for most parameters work really well. Don\'92t waste your time exploring the parameter space.\
+\
+
+\f0\b \ul Motion Correction:\
+
+\f2\b0 \ulnone Patch size*\
+Overlap between patches*\
+\
+First step is to do rigid, then iteratively do piecewise rigid\
+\
+max_shift: larger = longer to run\
+iterations_for_rigid:\
+\
+
+\f0\b \ul Calcium Imaging Analysis:\
+
+\f2\b0 \ulnone Neural signal = recording - background\
+Seed algorithm: greedy_roi\
+\
+- you look at each fov in patches, convolve each patch with gaussian (gSig parameter). - Set the K parameter to whatever you think is a reasonable number of components per patch\
+- rf = half size of patches\
+- stride_cnmf = amount of overlap in patches\
+- K = whatever is a reasonable number of components\
+\
+
+\f0\b \ul \
+For dendritic:\
+
+\f2\b0 \ulnone - png = number of background components = 2\
+	What does this mean??\
+\
+- p = 0 autoregressive system order\
+	How do I know how to set this?\
+\
+- rf = None\
+- stride_cnmf = None\
+K = 60\
+method_init = \'91graph_nmf\'92 or \'91sparse_nmf\'92
+\f0\b \ul \
+\
+\
+\
+\
+}
