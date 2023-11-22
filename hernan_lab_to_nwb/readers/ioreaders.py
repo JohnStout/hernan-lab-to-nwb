@@ -27,14 +27,20 @@ from pynwb import validate
 import numpy as np
 
 # loading neo package
-from decode_lab_code.utils.neuralynxrawio import NeuralynxRawIO
-from decode_lab_code.utils.neuralynxio import NeuralynxIO
+from hernan_lab_to_nwb.utils.neuralynxrawio import NeuralynxRawIO
+from hernan_lab_to_nwb.utils.neuralynxio import NeuralynxIO
+
+# pyedflib
+from pyedflib import highlevel
 
 # from utils
-from decode_lab_code.utils import nlxhelper
+from hernan_lab_to_nwb.utils import nlxhelper
 
-# multiple inheritance - ephys gets its __init__ from base and gives it to read_nlx
-from decode_lab_code.core.base import base
+# inheritance - base __init__ inherited
+from hernan_lab_to_nwb.core.base import base
+
+# import utilities for nwb 
+from hernan_lab_to_nwb.utils import nwb_utils
 
 # run below if troubleshooting in interactive window
 # folder_path = '/Users/js0403/local data/2020-06-26_16-56-10 9&10eb male ACTH ELS'
@@ -336,6 +342,9 @@ class read_nlx(base):
         self.header = header_dict
         self.history.append("header: example header from the filepath of a .ncs file")
 
+    def create_nwb_template(self):
+        nwb_utils.nwb_to_excel_template(self.folder_path)
+
     def write_nwb(self):
 
         """
@@ -349,34 +358,11 @@ class read_nlx(base):
         self.read_header()
         datetime_str = self.header['recording_opened']
 
-        # create NWB file
-        nwbfile = NWBFile(
-            session_description=input("Enter a brief discription of the experiment: "),
-            identifier=str(uuid4()),
-            session_start_time = datetime_str,
-            experimenter = input("Enter the name(s) of the experimenter(s): "),
-            lab="Hernan Lab",
-            institution="Nemours Children's Hospital",
-            session_id=self.session_id
-        )
-
-        # enter subject specific information
-        subject = Subject(
-                subject_id=input("Enter subject ID: "),
-                age=input("Enter age of subject (PD): "),
-                description=input("Enter notes on this mouse as needed: "),
-                species=input("Enter species type (e.g. mus musculus (C57BL, etc...), Rattus rattus, homo sapiens): "),
-                sex=input("Enter sex of subject: "),
-            )
-
-        nwbfile.subject = subject
-
-        # add recording device information
-        device = nwbfile.create_device(
-            name="Cheetah", 
-            description=input("Type of array? (e.g. tetrode/probe)"), 
-            manufacturer="Neuralynx"
-            )
+        # create NWB template interactivately
+        template_dir = nwb_utils.nwb_to_excel_template(self.folder_path)      
+        print("nwb_template.xlsx written to", self.folder_path)
+        input("Please fill in the nwb_template.xlsx sheet, then press any key to continue...")
+        nwbfile = nwb_utils.template_to_nwb(template_dir = template_dir)
 
         #%% 
 
@@ -513,6 +499,13 @@ class read_nlx(base):
             print("Error detected in NWB file")
 
 #%% 
+
+class read_pinnacle(base):
+
+    def read_ephys(self):
+
+        pass
+    pass
 
 # TODO: a class for reading optical physiology data
 class read_ophys(base):

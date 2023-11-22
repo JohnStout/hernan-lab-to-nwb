@@ -6,8 +6,6 @@
 # written by John Stout
 
 import os
-import numpy as np
-import matplotlib.pyplot as plt
 
 # this class is for putting directories into the pipeline
 class base():
