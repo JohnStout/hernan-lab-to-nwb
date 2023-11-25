@@ -14,6 +14,13 @@ def pandas_excel_interactive(dir: str, df = None):
         your keypad in the terminal or interactive python window. The function
         concludes by returning the updated dataFrame with your added info.
 
+    Unlike the template creation with nwb_to_excel_template, nor the template conversion
+        with template_to_nwb, pandas_excel_interactive takes a dataFrame with whatever columns
+        you have designed, then allows you to modify it.
+
+    In simpler terms, the functions with term "template" are not flexible in their dataFrame
+        column names. This function is agnostic.
+
     Args:
         >>> dir: directory of where to save data
         >>> df: dataFrame to modify
@@ -29,7 +36,7 @@ def pandas_excel_interactive(dir: str, df = None):
     df.to_excel(excel_dir)
     print("File saved to ", excel_dir)
     input("Please edit the excel file, resave it, then hit any key to continue...")
-    df_new = pd.read_excel(excel_dir)  
+    df_new = pd.read_excel(excel_dir) 
     
     return df_new
 
@@ -77,10 +84,10 @@ def template_to_nwb(template_dir: str):
     df = pd.read_excel(template_dir) 
  
     nwbfile = NWBFile(
-        session_description=df['session_description'].values[0],
+        session_description=str(df['session_description'].values[0]),
         identifier=str(uuid4()),
         session_start_time=datetime.now(tzlocal()), # filling in automatically
-        experimenter=df['experimenter name(s)'].values[0],
+        experimenter=[df['experimenter name(s)'].values[0]],
         lab=df['lab_name'].values[0],
         institution=df['institution'].values[0],
         experiment_description=df['experiment_description'].values[0],
@@ -104,4 +111,4 @@ def template_to_nwb(template_dir: str):
         manufacturer=df['recording_device_manufacturer'].values[0]
         )
     
-    return nwbfile
+    return nwbfile, device

@@ -31,7 +31,7 @@ from hernan_lab_to_nwb.utils.neuralynxrawio import NeuralynxRawIO
 from hernan_lab_to_nwb.utils.neuralynxio import NeuralynxIO
 
 # pyedflib
-from pyedflib import highlevel
+#from pyedflib import highlevel
 
 # from utils
 from hernan_lab_to_nwb.utils import nlxhelper
@@ -362,7 +362,7 @@ class read_nlx(base):
         template_dir = nwb_utils.nwb_to_excel_template(self.folder_path)      
         print("nwb_template.xlsx written to", self.folder_path)
         input("Please fill in the nwb_template.xlsx sheet, then press any key to continue...")
-        nwbfile = nwb_utils.template_to_nwb(template_dir = template_dir)
+        nwbfile, device = nwb_utils.template_to_nwb(template_dir = template_dir)
 
         #%% 
 
@@ -501,10 +501,6 @@ class read_nlx(base):
 #%% 
 
 class read_pinnacle(base):
-
-    def read_ephys(self):
-
-        pass
     pass
 
 # TODO: a class for reading optical physiology data
