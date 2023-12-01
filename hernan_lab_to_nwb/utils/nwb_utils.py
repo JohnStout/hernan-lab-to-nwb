@@ -7,7 +7,7 @@ from pynwb import NWBHDF5IO, NWBFile, TimeSeries
 from uuid import uuid4
 from pynwb.file import Subject
 
-def pandas_excel_interactive(dir: str, df = None):
+def pandas_excel_interactive(dir: str, df = None, save_name: str = "nwb_excel_sheet.xlsx"):
     """
     You pass this function a dataFrame, it saves it as an excel file,
         you then modify that excel file, resave it, then hit any button on 
@@ -24,6 +24,7 @@ def pandas_excel_interactive(dir: str, df = None):
     Args:
         >>> dir: directory of where to save data
         >>> df: dataFrame to modify
+        >>> save_name: an optional input to change the output save file name
 
     Returns:
         >>> df_new: new dataFrame with modified tables from excel
@@ -32,7 +33,7 @@ def pandas_excel_interactive(dir: str, df = None):
     """
 
     # now we save out to an excel sheet
-    excel_dir = os.path.join(dir,"nwb_excel_sheet.xlsx")
+    excel_dir = os.path.join(dir, save_name)
     df.to_excel(excel_dir)
     print("File saved to ", excel_dir)
     input("Please edit the excel file, resave it, then hit any key to continue...")

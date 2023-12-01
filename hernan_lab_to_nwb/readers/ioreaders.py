@@ -14,8 +14,10 @@ from uuid import uuid4
 
 import re
 import os
-
 import pandas as pd
+
+# can I import this later??
+import cv2
 
 # pynwb
 from pynwb import NWBHDF5IO, NWBFile
@@ -51,7 +53,10 @@ print("Cite pynwb, neo, and CatalystNeuro team")
 print("Please note, if there are multiple start/stops, more data is collected after a stopping recording. You must trim the CSC.")
 
 print("TODO: MUST CHECK ALL SLICING FOR [a:b], MUST BE [a::b]")
+
 # a specific class for unpacking neuralynx data
+
+# Add a second import that imports nlx packages??
 class read_nlx(base):
 
     def read_all(self):
@@ -266,7 +271,6 @@ class read_nlx(base):
             self.history.append("tt_grouping_table.BrainRegion: Enter Structure")
             self.history.append("tt_grouping_table.Inclusion: default is True, set to False if you want to exclude grouping in NWB")
 
-
     def read_vt(self):
 
         # Get VT data from .NVT files
@@ -342,6 +346,7 @@ class read_nlx(base):
         self.header = header_dict
         self.history.append("header: example header from the filepath of a .ncs file")
 
+    # TODO: NOT SURE WHAT this is for anymore - will be redundant
     def create_nwb_template(self):
         nwb_utils.nwb_to_excel_template(self.folder_path)
 
@@ -358,6 +363,8 @@ class read_nlx(base):
         self.read_header()
         datetime_str = self.header['recording_opened']
 
+
+        # TODO: THIS IS A GENERAL FUNCTION THAT will be supported by all write_nwb functions
         # create NWB template interactivately
         template_dir = nwb_utils.nwb_to_excel_template(self.folder_path)      
         print("nwb_template.xlsx written to", self.folder_path)
@@ -505,7 +512,34 @@ class read_pinnacle(base):
 
 # TODO: a class for reading optical physiology data
 class read_ophys(base):
-    pass
+
+    def read_movie(self, nwbfile_name: str):
+
+        """
+        Args:
+            >>> nwbfile_name: name of the nwb file
+        """
+
+        # read movie file
+        movie_path = os.path.join(miniscope_dir,i)
+        print("Reading movie from: ", movie_path)
+        cap = cv2.VideoCapture(movie_path) 
+        movie_data = []
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            if ret is False:
+                break
+            else:
+                movie_data.append(frame[:,:,0]) # only the first array matters
+        movie_mat = np.dstack(movie_data)
+        movie_data = np.moveaxis(movie_mat, -1, 0)
+        
+        # cache it
+        self.movie_data = movie_data
+        self.history.append("movie_data: video recording from miniscope. Axis 0 = time, Axis 1 = Rows, Axis 2 = Cols, Elements = pixels")
+    
+    def miniscope_to_nwb(self):
+        pass
 
 # TODO: a class for reading static images, like for IHC
 class read_imaging(base):

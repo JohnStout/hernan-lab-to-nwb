@@ -1,3 +1,9 @@
+# TODO: Need to come back to this when we have pinnacle system timing worked out
+# - John 9/27/23
+
+# THIS WILL BE PLACED INTO IOREADERS
+
+
 # Creating this code to be internally dependent on itself,
 # rather than externally dependent on self-created packages
 
@@ -14,6 +20,8 @@ from pynwb.epoch import TimeIntervals
 from pynwb.file import Subject
 from pynwb.ecephys import LFP, ElectricalSeries
 from uuid import uuid4
+
+from hernan_lab_to_nwb.utils import nwb_utils
 
 # helpers
 def pandas_excel_interactive(dir: str, df = None):
@@ -124,8 +132,16 @@ def template_to_nwb(template_dir: str):
 
 # directory input requested from user
 dir = input("Enter the directory to load .edf data: ") #'/Users/js0403/edf recording'
-experimenter_name = input("Enter your name: ")
-session_id = input("Enter information about this recording: ")
+#experimenter_name = input("Enter the experimenters name: ")
+#session_id = input("Enter information about this recording: ")
+
+# nwb_table
+nwb_table = pd.DataFrame()
+nwb_table['experimenter_name(s)']=[]
+nwb_table['experiment_description']=[]
+nwb_table['institution']=[]
+nwb_table['lab_name']=[]
+nwb_table = nwb_utils.pandas_excel_interactive(dir = dir, df = nwb_table, save_name = 'nwb_table.xlsx')
 
 # automation begins...
 dir_contents = sorted(os.listdir(dir))
@@ -177,7 +193,7 @@ for edfi in edf_names:
     data_table['Unit'] = unit
 
     # excel file gets saved out, edited, then reloaded
-    data_table = pandas_excel_interactive(dir = dir, df = data_table)
+    data_table = nwb_utils.pandas_excel_interactive(dir = dir, df = data_table)
 
     # TODO: Add preprocessing module to the NWB file for times when the user does things like filters/rereferences
     datetime_str = header['startdate']
@@ -195,10 +211,10 @@ for edfi in edf_names:
 
         # create NWB file
         nwbfile = NWBFile(
+            experimenter = list(nwb_table['experimenter_name(s)']),
             session_description="Continuous EEG recordings in TSC mice",
             identifier=str(uuid4()),
             session_start_time = datetime_str,
-            experimenter = experimenters,
             lab="Hernan Lab",
             institution="Nemours Children's Hospital"
         )
