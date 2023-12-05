@@ -4,6 +4,29 @@
 # Once the metadata is in place, the user can add what is needed.
 # 
 # John Stout
+
+# GOALS:
+# If the user wants to create a metadata excel file, user opens terminal and runs: run_nwb_metadata
+# If the user wants to use an existing metadata file, the user opens terminal and runs: use_nwb_metadata
+# then the user enters: write_nwb
+
+# ::::: THIS IS THE WAY :::::
+# I really just gotta make like folders with scripts that people can modify if needed
+# ---- metadata_to_nwb
+# -------- script - easy terminal access
+# -------- notebook - easy user manipulation
+# ---- neuralynx_to_nwb
+# -------- script
+# -------- notebook
+# ---- pinnacle_to_nwb
+# -------- script
+# -------- notebook
+# ---- uclaMiniscope_to_nwb
+# -------- script
+# -------- notebook
+
+# likewise, I'll have jupyter notebooks in the folders
+
 import os
 import pandas as pd
 from dateutil.tz import tzlocal
