@@ -39,7 +39,7 @@ def pandas_excel_interactive(dir: str, df = None, save_name: str = "nwb_excel_sh
     input("Please edit the excel file, resave it, then hit any key to continue...")
     df_new = pd.read_excel(excel_dir) 
     
-    return df_new
+    return excel_dir, df_new
 
 def nwb_to_excel_template(dir: str):
     """
@@ -73,7 +73,7 @@ def nwb_to_excel_template(dir: str):
     excel_dir = os.path.join(dir,"nwb_template.xlsx")
     df.to_excel(excel_dir)
 
-    return excel_dir
+    return excel_dir, df
 
 def template_to_nwb(template_dir: str):
     """
@@ -85,31 +85,34 @@ def template_to_nwb(template_dir: str):
     df = pd.read_excel(template_dir) 
  
     nwbfile = NWBFile(
+        # experiment details
+        experiment_description=str(df['experiment_description'].values[0]),
+        experimenter=str([df['experimenter name(s)'].values[0]]),
+        lab=str(df['lab_name'].values[0]),
+        institution=str(df['institution'].values[0]),
+
+        # session details
         session_description=str(df['session_description'].values[0]),
         identifier=str(uuid4()),
         session_start_time=datetime.now(tzlocal()), # filling in automatically
-        experimenter=[df['experimenter name(s)'].values[0]],
-        lab=df['lab_name'].values[0],
-        institution=df['institution'].values[0],
-        experiment_description=df['experiment_description'].values[0],
-        session_id=df['session_id'].values[0],
-        notes = df['session_notes'].values[0]
+        session_id=str(df['session_id'].values[0]),
+        notes = str(df['session_notes'].values[0])
     )
 
     # enter subject specific information
     nwbfile.subject = Subject(
-            subject_id=df['subject_id'].values[0],
-            age=df['subject_age'].values[0],
-            description=df['subject_description'].values[0],
-            species=df['subject_species/genotype'].values[0],
-            sex=df['subject_sex'].values[0],
+            subject_id=str(df['subject_id'].values[0]),
+            age=str(df['subject_age'].values[0]),
+            description=str(df['subject_description'].values[0]),
+            species=str(df['subject_species/genotype'].values[0]),
+            sex=str(df['subject_sex'].values[0]),
         )
 
     # add recording device information
     device = nwbfile.create_device(
-        name=df['recording_device_name'].values[0], 
-        description=df['recording_device_description'].values[0], 
-        manufacturer=df['recording_device_manufacturer'].values[0]
+        name=str(df['recording_device_name'].values[0]), 
+        description=str(df['recording_device_description'].values[0]), 
+        manufacturer=str(df['recording_device_manufacturer'].values[0])
         )
     
     return nwbfile, device

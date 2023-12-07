@@ -10,7 +10,7 @@ Author: Julia Sprenger, Carlos Canova
 """
 
 from neo.io.basefromrawio import BaseFromRaw
-from decode_lab_code.utils.neuralynxrawio import NeuralynxRawIO
+from hernan_lab_to_nwb.utils.neuralynxrawio import NeuralynxRawIO
 
 
 class NeuralynxIO(NeuralynxRawIO, BaseFromRaw):

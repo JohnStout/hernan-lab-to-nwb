@@ -15,15 +15,27 @@ from uuid import uuid4
 import re
 import os
 import pandas as pd
+import json
 
 # can I import this later??
 import cv2
 
 # pynwb
-from pynwb import NWBHDF5IO, NWBFile
+from pynwb import NWBHDF5IO, NWBFile, TimeSeries
 from pynwb.ecephys import LFP, ElectricalSeries
 from pynwb.file import Subject
 from pynwb import validate
+from pynwb.image import ImageSeries
+from pynwb.ophys import (
+    CorrectedImageStack,
+    Fluorescence,
+    ImageSegmentation,
+    MotionCorrection,
+    OnePhotonSeries,
+    OpticalChannel,
+    RoiResponseSeries,
+    TwoPhotonSeries,
+)
 
 # numpy
 import numpy as np
@@ -43,18 +55,6 @@ from hernan_lab_to_nwb.core.base import base
 
 # import utilities for nwb 
 from hernan_lab_to_nwb.utils import nwb_utils
-
-# run below if troubleshooting in interactive window
-# folder_path = '/Users/js0403/local data/2020-06-26_16-56-10 9&10eb male ACTH ELS'
-# from decode_lab_code.readers.ioreaders import read_nlx
-# self = read_nlx(folder_path)
-
-print("Cite pynwb, neo, and CatalystNeuro team")
-print("Please note, if there are multiple start/stops, more data is collected after a stopping recording. You must trim the CSC.")
-
-print("TODO: MUST CHECK ALL SLICING FOR [a:b], MUST BE [a::b]")
-
-# a specific class for unpacking neuralynx data
 
 # Add a second import that imports nlx packages??
 class read_nlx(base):
@@ -346,11 +346,7 @@ class read_nlx(base):
         self.header = header_dict
         self.history.append("header: example header from the filepath of a .ncs file")
 
-    # TODO: NOT SURE WHAT this is for anymore - will be redundant
-    def create_nwb_template(self):
-        nwb_utils.nwb_to_excel_template(self.folder_path)
-
-    def write_nwb(self):
+    def write_nwb(self, template_dir: str):
 
         """
         All .ncs files will be taken in
@@ -362,7 +358,6 @@ class read_nlx(base):
         # make sure you have the header
         self.read_header()
         datetime_str = self.header['recording_opened']
-
 
         # TODO: THIS IS A GENERAL FUNCTION THAT will be supported by all write_nwb functions
         # create NWB template interactivately
@@ -505,23 +500,21 @@ class read_nlx(base):
         else:
             print("Error detected in NWB file")
 
-#%% 
-
-class read_pinnacle(base):
-    pass
-
 # TODO: a class for reading optical physiology data
 class read_ophys(base):
 
-    def read_movie(self, nwbfile_name: str):
+    # TODO: This could be its own function
+    def read_movie(self, movie_name: str):
 
         """
         Args:
-            >>> nwbfile_name: name of the nwb file
+            >>> movie_name: name of the movie to load with extension
+
+        John Stout
         """
 
         # read movie file
-        movie_path = os.path.join(miniscope_dir,i)
+        movie_path = os.path.join(self.folder_path, movie_name)
         print("Reading movie from: ", movie_path)
         cap = cv2.VideoCapture(movie_path) 
         movie_data = []
@@ -536,17 +529,193 @@ class read_ophys(base):
         
         # cache it
         self.movie_data = movie_data
+        self.movie_name = movie_name
         self.history.append("movie_data: video recording from miniscope. Axis 0 = time, Axis 1 = Rows, Axis 2 = Cols, Elements = pixels")
-    
+        self.history.append("movie_name: video recording from miniscope. Axis 0 = time, Axis 1 = Rows, Axis 2 = Cols, Elements = pixels")
+
     def miniscope_to_nwb(self):
-        pass
 
-# TODO: a class for reading static images, like for IHC
-class read_imaging(base):
-    pass
+        """
+        This code converts recorded data from the UCLA miniscope to the NWB format.
+        As long as your separate folders with behavior, camera tracking, miniscope, and experiment details
+        have the names 'behavior', 'camera', 'experiment', and 'miniscope', this code works.
 
-# TODO: a class for reading non-vt videos
-class read_video(base):
+        John Stout
+        """
+
+        # TODO: dir will be the only input to this code
+        dir = self.folder_path
+        dir_contents = sorted(os.listdir(dir))
+
+        # Directly accessible information
+        folder_metaData = json.load(open(os.path.join(dir,'metaData.json')))
+        folder_notes = pd.read_csv(os.path.join(dir,'notes.csv'))
+
+        # behavior
+        behavior_id = [i for i in dir_contents if 'behavior' in i][0]
+        behavior_dir = os.path.join(dir,behavior_id)
+        behavior_metaData = json.load(open(os.path.join(behavior_dir,'metaData.json')))
+        behavior_pose = pd.read_csv(os.path.join(behavior_dir,'pose.csv'))
+
+        # cameraDevice
+        camera_id = [i for i in dir_contents if 'camera' in i][0]
+        camera_dir = os.path.join(dir,camera_id)
+        camera_metaData = json.load(open(os.path.join(camera_dir,'metaData.json')))
+        camera_times = pd.read_csv(os.path.join(camera_dir,'timeStamps.csv'))
+
+        # miniscopeDevice - where the miniscope data is located - use this to identify miniscope file name
+        miniscope_id = [i for i in dir_contents if 'miniscope' in i][0]
+        miniscope_dir = os.path.join(dir,miniscope_id)
+        miniscope_data = [i for i in sorted(os.listdir(miniscope_dir)) if '.avi' in i]
+        miniscope_metaData = json.load(open(os.path.join(miniscope_dir,'metaData.json')))
+        miniscope_times = pd.read_csv(os.path.join(miniscope_dir,'timeStamps.csv'))
+        miniscope_head_orientation = pd.read_csv(os.path.join(miniscope_dir,'headOrientation.csv'))
+
+        # experiment
+        print("This version does not support the experiment folder due to no testing data")
+
+        # %% Put data into NWB
+
+        # use nwb_utils to extract the dataframe and fill it with the json data
+        excel_dir, df = nwb_utils.nwb_to_excel_template(self.folder_path)
+
+        # edit dataframe to resave
+        df['experiment_description']=[folder_metaData['experimentName']]
+        df['experimenter name(s)']=[str(folder_metaData['researcherName'])]
+        df['institution']=['Nemours']
+        df['lab_name']=['Hernan']
+        df['subject_id']=[folder_metaData['animalName']]
+        df['recording_device_name']=[miniscope_metaData['deviceType']]
+        df['recording_device_description']=["UCLA Miniscope v4.4"]
+        df['recording_device_manufacturer']=["Open Ephys"]
+        df['session_id'] = [folder_metaData['baseDirectory'].split('/')[-1]]
+        df['virus_injected']=[[]]
+        df['virus_brain_targets']=[[]]
+        df.to_excel(excel_dir)
+        excel_dir, df = nwb_utils.pandas_excel_interactive(self.folder_path,df=df,save_name='nwb_template.xlsx')
+
+        # year, month, day, hour, minute, second
+        time_data = folder_metaData['recordingStartTime']
+        rec_time = datetime(time_data['year'],time_data['month'],time_data['day'],
+                            time_data['hour'],time_data['minute'],time_data['second'],
+                            time_data['msec'],tzinfo=tz.tzlocal())
+
+        # creating the NWBFile
+        print("This file does not handle multiple custom entries")
+        nwbfile, device = nwb_utils.template_to_nwb(template_dir = excel_dir)
+
+        optical_channel = OpticalChannel(
+            name="OpticalChannel",
+            description="an optical channel",
+            emission_lambda=500.0, # NOT SURE HOW I FIND THIS
+        )
+
+        imaging_plane = nwbfile.create_imaging_plane(
+            name="ImagingPlane",
+            optical_channel=optical_channel,
+            imaging_rate=float(miniscope_metaData['frameRate']),
+            description="Calcium Imaging",
+            device=device,
+            excitation_lambda=600.0, # WHERE DO I FIND THIS??
+            indicator=df['virus_injected'].values[0],
+            location=df['virus_brain_targets'].values[0],
+        )
+
+        # save the nwb file
+        nwbpath = os.path.join(dir,"nwbfile.nwb")
+        self.nwbpath = nwbpath
+        self.history = 'nwbpath: directory of nwbfile'
+        with NWBHDF5IO(nwbpath, mode="w") as io:
+            io.write(nwbfile)
+        del nwbfile # delete the file to remove objects
+
+        # reload
+        #with NWBHDF5IO(nwbpath, mode="r") as io:
+            #nwbfile = io.read()
+
+        #%% Writing data to NWB file by loading it lazily
+
+        # this approach maximizes memory space by only loading what is needed,
+        # and only saving out what is needed. Then clearing memory of the large arrays.
+
+        # It loads the nwbfile that has no data, it adds a calcium imaging movie to it,
+        # saves the nwbfile, loads it again lazily (not loading the actual data), then adds
+        # a new object with new data, and so forth.
+
+        # This circumvents the issue of having to load all data into memory, then save all data to disk at once.
+
+        # movie times - this must be segmented according to the movie
+        movie_times = miniscope_times['Time Stamp (ms)']
+
+        # TODO: ADD an index to label each timestamp to a video
+        # Can I add a pandas array as a timestamps videO?
+                
+        # open the NWB file in r+ mode
+        counter = 0; 
+        for i in miniscope_data:
+
+            # define directory
+            temp_dir = os.path.join(miniscope_dir,i)
+            print(temp_dir)
+
+            # read movie file
+            movie_path = os.path.join(miniscope_dir,i)
+            print("Reading movie from: ", movie_path)
+            cap = cv2.VideoCapture(movie_path) 
+            movie_data = []
+            while(cap.isOpened()):
+                ret, frame = cap.read()
+                if ret is False:
+                    break
+                else:
+                    movie_data.append(frame[:,:,0]) # only the first array matters
+            movie_mat = np.dstack(movie_data)
+            movie_data = np.moveaxis(movie_mat, -1, 0)
+
+            # get times by index
+            idx = np.arange(movie_data.shape[0])
+            temp_times = movie_times[idx].to_numpy(dtype=int) # THESE ARE THE DATA TO SAVE!!!
+
+            # now get an updated version of the movie_times, with the previous data dropped
+            movie_times = movie_times.drop(idx).reset_index(drop=True)
+            
+            # search for nwbfile as a variab
+            # le and remove it
+            if 'nwbfile' in locals():
+                del nwbfile
+
+            with NWBHDF5IO(nwbpath, "r+") as io:
+                print("Reading nwbfile from: ",nwbpath)
+                nwbfile = io.read()
+
+                # create OnePhotonSeries Object
+                one_p_series = OnePhotonSeries(
+                    name="recording"+str(counter),
+                    data=movie_data,
+                    #timestamps = temp_times,
+                    imaging_plane=nwbfile.get_imaging_plane(),
+                    rate=float(miniscope_metaData['frameRate']), # I'm not sure what this refers to
+                    unit="raw video - rate in terms of frame-rate",
+                )
+                nwbfile.add_acquisition(one_p_series)
+
+                # write the modified NWB file
+                print("Rewriting nwbfile with recording",str(counter))
+                io.write(nwbfile)
+                io.close()
+                counter += 1
+
+            del movie_mat, movie_data, nwbfile, one_p_series
+
+
+        # confirmed !!!
+        # read to check NWB file
+        #with NWBHDF5IO(nwbpath, "r+") as io:
+        #    print("Reading nwbfile from: ",nwbpath)
+        #    nwbfile = io.read()
+        #    tester = nwbfile.acquisition['recording1'].data[:]
+
+class read_pinnacle(base):
     pass
 
 #%%  some general helper functions for nwb stuff

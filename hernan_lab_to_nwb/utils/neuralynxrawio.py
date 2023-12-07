@@ -64,7 +64,7 @@ import copy
 from collections import (namedtuple, OrderedDict)
 
 from neo.rawio.neuralynxrawio.ncssections import (NcsSection, NcsSectionsFactory)
-from decode_lab_code.utils.nlxheader import NlxHeader
+from hernan_lab_to_nwb.utils.nlxheader import NlxHeader
 
 
 class NeuralynxRawIO(BaseRawIO):
