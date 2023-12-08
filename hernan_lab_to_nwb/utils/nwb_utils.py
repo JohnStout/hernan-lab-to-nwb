@@ -36,7 +36,7 @@ def pandas_excel_interactive(dir: str, df = None, save_name: str = "nwb_excel_sh
     excel_dir = os.path.join(dir, save_name)
     df.to_excel(excel_dir)
     print("File saved to ", excel_dir)
-    input("Please edit the excel file, resave it, then hit any key to continue...")
+    input(('').join(["Please edit the excel file titled: ",save_name,", resave it, then hit any key to continue..."]))
     df_new = pd.read_excel(excel_dir) 
     
     return excel_dir, df_new
