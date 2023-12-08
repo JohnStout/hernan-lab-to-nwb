@@ -23,7 +23,7 @@ conda create -n my_env python=3.9
 conda activate my_env
 git clone https://github.com/JohnStout/hernan-lab-to-nwb 
 cd hernan-lab-to-nwb
-pip install - e.
+pip install -e .
 ```
 
 If you want to convert data in the terminal:
