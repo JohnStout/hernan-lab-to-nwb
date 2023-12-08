@@ -16,7 +16,8 @@ Current supported formats:
 
 
 To download:
-1) Download anaconda3 if you haven't already. You might want run these lines separately.
+1) Download anaconda3 and git.
+2) Run the lines below in your terminal (mac) or conda terminal (pc)
 
 ```
 conda create -n my_env python=3.9
