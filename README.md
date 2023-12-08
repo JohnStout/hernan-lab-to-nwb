@@ -5,7 +5,7 @@ This package converts neurophysiology data to NWB and it prompts the user to int
 **Development information:**
 * Validated on MAC silicon M2
 * Not tested on PC
-* Early development
+* Early development and requires additional testing
 * Supports Neuralynx, UCLA miniscope, Pinnacle
     * Neuralynx handles .ncs, .ntt, .nvt, .nev files
     * UCLA Miniscope handles .avi and .json files
