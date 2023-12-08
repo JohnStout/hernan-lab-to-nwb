@@ -43,7 +43,7 @@ class convert():
     def pinnacle(self):
 
         # instatiate object with directory
-        eeg_object = ioreaders.read_pinnacle(folder_path = self.folder_path)
+        eeg_object = ioreaders.read_pinnacle(folder_path = self.dir)
 
         # write to NWB - this is recommended rather than separately visualizing the datasets
         eeg_object.write_nwb()
