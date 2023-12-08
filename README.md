@@ -33,6 +33,9 @@ If you want to convert data in the terminal:
    
 ```
 python
+```
+
+```
 from hernan_lab_to_nwb.converters import convert
 ```
 
