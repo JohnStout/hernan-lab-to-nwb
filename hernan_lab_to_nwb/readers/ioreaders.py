@@ -346,7 +346,7 @@ class read_nlx(base):
         self.header = header_dict
         self.history.append("header: example header from the filepath of a .ncs file")
 
-    def write_nwb(self, template_dir: str):
+    def write_nwb(self):
 
         """
         All .ncs files will be taken in
