@@ -25,11 +25,18 @@ conda activate my_env
 git clone https://github.com/JohnStout/hernan-lab-to-nwb 
 cd hernan-lab-to-nwb
 pip install -e .
-``` 
+```
 
-If you want to convert data in the terminal:
-1) Open terminal (if on mac, normal terminal. If on PC, open conda terminal)
+**Close terminal and re-open upon first installation**
+
+Converting data in terminal:
+1) Open terminal (if on mac, normal terminal. If on PC, open conda terminal).
 2) Enter the greyed out lines below in your terminal:
+
+Activate your environment
+```
+conda activate my_env
+```
 
 Start python
 ```
