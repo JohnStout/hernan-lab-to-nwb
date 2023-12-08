@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hernan-lab-to-nwb"
 version = "0.1.1"
-description = "Code to facilitate nwb conversions in the labs of Amanda Hernan and Rodney Scott"
+description = "Code to facilitate NWB conversions and data extraction in the labs of Amanda Hernan and Rodney Scott"
 authors = ["John Stout <john.j.stout.jr@gmail.com>"]
 readme = "README.md"
 
@@ -16,6 +16,7 @@ jupyterlab = "^4.0.7"
 matplotlib = "3.8.0"
 pyEDFlib = "0.1.36"
 pynapple = "0.4.0"
+scipy = "1.11.3"
 
 [build-system]
 requires = ["poetry-core"]
