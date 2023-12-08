@@ -26,8 +26,8 @@ class convert():
         ephys_object.read_ephys() # read data
 
         # Edit pandas array dynamically
-        ephys_object.csc_grouping_table = nwb_utils.pandas_excel_interactive(dir = ephys_object.folder_path, df = ephys_object.csc_grouping_table)
-        ephys_object.tt_grouping_table = nwb_utils.pandas_excel_interactive(dir = ephys_object.folder_path, df = ephys_object.tt_grouping_table)
+        temp_dir, ephys_object.csc_grouping_table = nwb_utils.pandas_excel_interactive(dir = ephys_object.folder_path, df = ephys_object.csc_grouping_table)
+        temp_dir, ephys_object.tt_grouping_table = nwb_utils.pandas_excel_interactive(dir = ephys_object.folder_path, df = ephys_object.tt_grouping_table)
 
         # write file
         ephys_object.write_nwb()
