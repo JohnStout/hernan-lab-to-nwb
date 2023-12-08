@@ -24,10 +24,12 @@ To download:
 If you want to convert data in the terminal:
 1) Open terminal (if on mac, normal terminal. If on PC, open conda terminal)
 2) Enter the following things into the terminal:
+   
 ```
 python
 from hernan_lab_to_nwb.converters import convert
 ```
+
 4) Determine what you want to convert. Here we will convert miniscope data. Enter the following into terminal:
         IF MINISCOPE:
             dir = ".../miniscope/data/134A/AAV2/3-Syn-GCaMP8f/2023_11_14/13_21_49"
