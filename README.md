@@ -85,8 +85,27 @@ IF PINNACLE:
 convert(dir).pinnacle()
 ```
 
-**Important Details Regarding Credit** 
+**Interface with Terminal**
 
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/eed9e9a4-611d-49be-a81a-13eee60bd514
+
+**Follow Terminal Instructions**
+
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/9e77f331-b500-4d6d-a28e-63a2d014fe43
+
+**Interact with Excel to fill out NWB metadata**
+
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/99d70ded-33ca-4591-bd27-08faba503e54
+
+**Use Excel to define metadata about recording devices**
+
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/313aaff0-d312-45bb-9d39-9fd248691356
+
+**Watch Terminal window to monitor progress**
+
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/829c7a23-4064-4639-8181-4226cb99b33c
+
+**Important Details Regarding Credit** 
 
 These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichtors CatalystNeuro team.
 * neo: https://github.com/NeuralEnsemble/python-neo
