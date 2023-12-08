@@ -361,7 +361,7 @@ class read_nlx(base):
 
         # TODO: THIS IS A GENERAL FUNCTION THAT will be supported by all write_nwb functions
         # create NWB template interactivately
-        template_dir = nwb_utils.nwb_to_excel_template(self.folder_path)      
+        template_dir, df_temp = nwb_utils.nwb_to_excel_template(self.folder_path)      
         print("nwb_template.xlsx written to", self.folder_path)
         input("Please fill in the nwb_template.xlsx sheet, then press any key to continue...")
         nwbfile, device = nwb_utils.template_to_nwb(template_dir = template_dir)
