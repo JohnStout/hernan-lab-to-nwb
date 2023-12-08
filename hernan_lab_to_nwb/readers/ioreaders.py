@@ -492,13 +492,7 @@ class read_nlx(base):
 
         # -- Save NWB file -- #
         save_nwb(folder_path=self.folder_path, nwb_file=nwbfile)
-        val_out = validate(paths=[os.path.join(self.folder_path,'nwbfile.nwb')], verbose=True)
-        
-        print("NWB validation may be incorrect. Still need an invalid NWB file to check against....10/10/2023")
-        if val_out[1]==0:
-            print("No errors detected in NWB file")
-        else:
-            print("Error detected in NWB file")
+        validate_nwb(nwbpath = os.path.join(self.folder_path,'nwbfile.nwb'))
 
 # miniscope data
 class read_miniscope(base):
@@ -705,6 +699,8 @@ class read_miniscope(base):
                 io.close()
                 counter += 1
 
+            # validate file
+            validate_nwb(nwbpath=nwbpath)            
             del movie_mat, movie_data, nwbfile, one_p_series
 
 
@@ -877,7 +873,18 @@ class read_pinnacle(base):
                     io.write(nwbfile)    
                     io.close()
 
+                # validate file
+                validate_nwb(nwbpath=dir_save)
+
 #%%  some general helper functions for nwb stuff
+
+def validate_nwb(nwbpath: str):
+        val_out = validate(paths=[nwbpath], verbose=True)
+        print("NWB validation may be incorrect. Still need an invalid NWB file to check against....10/10/2023")
+        if val_out[1]==0:
+            print("No errors detected in NWB file")
+        else:
+            print("Error detected in NWB file")
 
 def load_nwb(nwbpath: str):
     """
