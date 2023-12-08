@@ -29,37 +29,39 @@ pip install -e .
 
 If you want to convert data in the terminal:
 1) Open terminal (if on mac, normal terminal. If on PC, open conda terminal)
-2) Enter the following things into the terminal:
-   
+2) Enter the greyed out lines below in your terminal:
+
+Start python
 ```
 python
 ```
 
+Import package
 ```
 from hernan_lab_to_nwb.converters import convert
 ```
 
-3) Determine what you want to convert.
+Enter directory
+
+```
+dir = "YOUR DATA DIRECTORY GOES IN REPLACEMENT OF THESE WORDS"
+```
 
 IF MINISCOPE:
 
 ```
-dir = ".../miniscope/data/134A/AAV2/3-Syn-GCaMP8f/2023_11_14/13_21_49"
 convert(dir).miniscope()
 ```
            
 IF NEURALYNX:
 
 ```
-dir = ".../2020-06-26_16-56-10 9&10eb male ACTH ELS"
 convert(dir).neuralynx()
 ```
 
 IF PINNACLE:
 
-
 ```
-dir = ".../data" # or whatever your folder is
 convert(dir).pinnacle()
 ```
 
