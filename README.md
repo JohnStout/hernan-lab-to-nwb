@@ -14,12 +14,15 @@ Current supported formats:
 
 
 To download:
-1) Download anaconda3 if you haven't already
-2) conda create -n decode_lab_env python=3.9
-3) conda activate decode_lab_env
-4) git clone https://github.com/JohnStout/hernan-lab-to-nwb 
-5) cd hernan-lab-to-nwb
-6) pip install - e.
+1) Download anaconda3 if you haven't already. You might want run these lines separately.
+
+```
+conda create -n my_env python=3.9
+conda activate my_env
+git clone https://github.com/JohnStout/hernan-lab-to-nwb 
+cd hernan-lab-to-nwb
+pip install - e.
+```
 
 If you want to convert data in the terminal:
 1) Open terminal (if on mac, normal terminal. If on PC, open conda terminal)
@@ -30,7 +33,8 @@ python
 from hernan_lab_to_nwb.converters import convert
 ```
 
-4) Determine what you want to convert. Here we will convert miniscope data. Enter the following into terminal:
+3) Determine what you want to convert.
+
 IF MINISCOPE:
 
 ```
@@ -38,17 +42,18 @@ dir = ".../miniscope/data/134A/AAV2/3-Syn-GCaMP8f/2023_11_14/13_21_49"
 convert(dir=dir).miniscope()
 ```
            
-IF NEURALYNX
+IF NEURALYNX:
 
 ```
 dir = ".../2020-06-26_16-56-10 9&10eb male ACTH ELS"
 convert(dir=dir).neuralynx()
 ```
 
-IF PINNACLE
+IF PINNACLE:
+
 
 ```
-dir = ".../data" or whatever your folder is
+dir = ".../data" # or whatever your folder is
 convert(dir=dir).pinnacle()
 ```
 
