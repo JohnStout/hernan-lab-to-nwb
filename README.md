@@ -41,14 +41,14 @@ IF MINISCOPE:
 
 ```
 dir = ".../miniscope/data/134A/AAV2/3-Syn-GCaMP8f/2023_11_14/13_21_49"
-convert(dir=dir).miniscope()
+convert(dir).miniscope()
 ```
            
 IF NEURALYNX:
 
 ```
 dir = ".../2020-06-26_16-56-10 9&10eb male ACTH ELS"
-convert(dir=dir).neuralynx()
+convert(dir).neuralynx()
 ```
 
 IF PINNACLE:
@@ -56,7 +56,7 @@ IF PINNACLE:
 
 ```
 dir = ".../data" # or whatever your folder is
-convert(dir=dir).pinnacle()
+convert(dir).pinnacle()
 ```
 
 
