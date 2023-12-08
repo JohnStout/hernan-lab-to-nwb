@@ -871,8 +871,8 @@ class read_pinnacle(base):
                 nwb_name = os.path.join(subject_id+'_'+sess_id+'.nwb')
                 dir_save = os.path.join(dir,nwb_name)
                 duplicate_name = [i for i in self.dir_contents if nwb_name in i]
-                print("You already have an NWB file with this name, adding '_new' extension")
                 if nwb_name in duplicate_name:
+                    print("You already have an NWB file with this name, adding '_new' extension")                
                     nwb_name = nwb_name.split('.nwb')[0]+'_new'+'.nwb'
                     dir_save = os.path.join(dir,nwb_name)
                     
