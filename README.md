@@ -7,7 +7,9 @@ This package converts neurophysiology data to NWB and it prompts the user to int
 * Not tested on PC
 * Early development
 * Supports Neuralynx, UCLA miniscope, Pinnacle
-    --- Pinnacle handles multiple, simultaneously recorded animals if relevant. No inputs required.
+    * Neuralynx handles .ncs, .ntt, .nvt, .nev files
+    * UCLA Miniscope handles .avi and .json files
+    * Pinnacle handles multiple, simultaneously recorded animals if relevant. No inputs required.
 
 **Workflow:**
 * Define your directory in terminal python shell
