@@ -2,7 +2,7 @@
 
 Code that supports the conversion of raw data to NWB and extraction of NWB for analysis.
 
-Still in development*
+Still in development* and validated on MAC apple silicon.
 
 The work-flow of this code requires to run code and interact with excel files.
 
