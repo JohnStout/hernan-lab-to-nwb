@@ -85,6 +85,12 @@ IF PINNACLE:
 convert(dir).pinnacle()
 ```
 
+**Important Details Regarding Credit** 
+
+
+These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichtors CatalystNeuro team.
+* neo: https://github.com/NeuralEnsemble/python-neo
+* CatalystNeuro: https://github.com/catalystneuro
 
 
 
