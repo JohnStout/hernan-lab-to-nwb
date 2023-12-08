@@ -718,7 +718,7 @@ class read_miniscope(base):
 # pinnacle data
 class read_pinnacle(base):
 
-    print("THIS CODE DOES NOT ALIGN TIMES TO MOVIE")
+    print("PINNACLE CODE DOES NOT ALIGN TIMES TO MOVIE")
 
     def write_nwb(self):
 

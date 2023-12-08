@@ -38,7 +38,7 @@ class convert():
         ophys_object = ioreaders.read_miniscope(folder_path = self.dir)
 
         # write to NWB - this is recommended rather than separately visualizing the datasets
-        ophys_object.miniscope_to_nwb()
+        ophys_object.write_nwb()
 
     def pinnacle(self):
 
