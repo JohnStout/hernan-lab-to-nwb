@@ -867,6 +867,7 @@ class read_pinnacle(base):
                         rate=fs)
                 nwbfile.add_acquisition(eeg_electrical_series)
 
+                Warning("If you get an error, you may have an NWB file with the same name as what you are trying to save. Delete the file and try again.")
                 dir_save = os.path.join(dir,subject_id+'_'+sess_id+'.nwb')
                 print("Writing .nwb file as ",dir_save)
                 with NWBHDF5IO(dir_save, "w") as io:
