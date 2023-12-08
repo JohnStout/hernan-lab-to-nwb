@@ -107,7 +107,7 @@ https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/84309878-348a-415
 
 **Important Details Regarding Credit** 
 
-These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichtors CatalystNeuro team.
+These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichters CatalystNeuro team.
 * neo: https://github.com/NeuralEnsemble/python-neo
 * CatalystNeuro: https://github.com/catalystneuro
 
