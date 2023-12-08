@@ -35,10 +35,15 @@ class convert():
     def miniscope(self):
 
         # instatiate object with directory
-        ophys_object = ioreaders.read_ophys(folder_path = self.dir)
+        ophys_object = ioreaders.read_miniscope(folder_path = self.dir)
 
         # write to NWB - this is recommended rather than separately visualizing the datasets
         ophys_object.miniscope_to_nwb()
 
     def pinnacle(self):
-        pass
+
+        # instatiate object with directory
+        eeg_object = ioreaders.read_pinnacle(folder_path = self.folder_path)
+
+        # write to NWB - this is recommended rather than separately visualizing the datasets
+        eeg_object.write_nwb()
