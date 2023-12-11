@@ -28,7 +28,7 @@ This package converts neurophysiology data to NWB and it prompts the user to int
     * Can have as many animals as you want in a unique folder. Handles multiple simultanoeous recordings across animals
 
 
-To download:
+## Download
 1) Download anaconda3 and git.
 2) Run the lines below in your terminal (mac) or conda terminal (pc)
 
