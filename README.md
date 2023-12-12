@@ -3,8 +3,8 @@
 This package converts neurophysiology data to NWB and it prompts the user to interact with excel files to fill out metadata information!
 
 **Development information:**
-* Validated on MAC silicon M2
-* Not tested on PC
+* Validated on MAC silicon M2 - only use on mac devices!
+* Early testing and development on PC
 * Early development and requires additional testing
 * Supports Neuralynx, UCLA miniscope, Pinnacle
     * Neuralynx handles .ncs, .ntt, .nvt, .nev files
