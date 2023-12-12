@@ -543,8 +543,13 @@ class read_miniscope(base):
 
         # Directly accessible information
         folder_metaData = json.load(open(os.path.join(dir,'metaData.json')))
-        folder_notes = pd.read_csv(os.path.join(dir,'notes.csv'))
+        try:
+            folder_notes = pd.read_csv(os.path.join(dir,'notes.csv'))
+        except:
+            pass
 
+        # TODO: Build in a more generalizable way to extract .csv and .json files. 
+        
         # behavior
         behavior_id = [i for i in dir_contents if 'behavior' in i][0]
         behavior_dir = os.path.join(dir,behavior_id)
