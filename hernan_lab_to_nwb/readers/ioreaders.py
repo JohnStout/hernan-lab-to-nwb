@@ -135,7 +135,7 @@ class read_nlx(base):
         
         # Here we create separate dictionaries containing datasets with their corresponding labels
         dict_keys = neural_dict.keys()
-        self.csc_data = dict(); self.tt_data = dict(); self.csc_data_fs = dict();
+        self.csc_data = dict(); self.tt_data = dict(); self.csc_data_fs = dict()
         csc_added = False; tt_added = False
         for groupi in dict_keys: # grouping variable to get TT data
             print("Working with",groupi)
@@ -144,7 +144,7 @@ class read_nlx(base):
                 # read data using Neo's NeuralynxIO
                 if 'blks' in locals():
                     del blks
-                blks = NeuralynxIO(filename=self.folder_path+'/'+datai, keep_original_times=True).read(lazy=False) # blocks
+                blks = NeuralynxIO(filename=self.folder_path+self.slash+datai, keep_original_times=True).read(lazy=False) # blocks
                 #blks = NeuralynxRawIO(filename =folder_path+'/'+datai).parse_header()
 
                 if len(blks) > 1:
@@ -549,7 +549,7 @@ class read_miniscope(base):
             pass
 
         # TODO: Build in a more generalizable way to extract .csv and .json files. 
-        
+
         # behavior
         behavior_id = [i for i in dir_contents if 'behavior' in i][0]
         behavior_dir = os.path.join(dir,behavior_id)
@@ -587,7 +587,7 @@ class read_miniscope(base):
         df['recording_device_name']=[miniscope_metaData['deviceType']]
         df['recording_device_description']=["UCLA Miniscope v4.4"]
         df['recording_device_manufacturer']=["Open Ephys"]
-        df['session_id'] = [folder_metaData['baseDirectory'].split('/')[-1]]
+        df['session_id'] = [folder_metaData['baseDirectory'].split(self.slash)[-1]]
         df['virus_injected']=[[]]
         df['virus_brain_targets']=[[]]
         df.to_excel(excel_dir)
@@ -921,7 +921,7 @@ def save_nwb(folder_path: str, data_name: str = 'nwbfile.nwb', nwb_file=None):
             nwb_file: nwb file type
     """
 
-    with NWBHDF5IO(folder_path+'/'+data_name, "w") as io:
+    with NWBHDF5IO(os.path.join(folder_path,data_name), "w") as io:
         io.write(nwb_file)
 
-    print("Save .nwb file to: ",folder_path+'/'+data_name)
+    print("Save .nwb file to: ",os.path.join(folder_path,data_name))
