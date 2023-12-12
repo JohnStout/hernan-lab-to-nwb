@@ -28,7 +28,7 @@ This package converts neurophysiology data to NWB and it prompts the user to int
     * Can have as many animals as you want in a unique folder. Handles multiple simultanoeous recordings across animals
 
 
-To download:
+## Download
 1) Download anaconda3 and git.
 2) Run the lines below in your terminal (mac) or conda terminal (pc)
 
@@ -87,27 +87,27 @@ convert(dir).pinnacle()
 
 **Interface with Terminal**
 
-https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/eed9e9a4-611d-49be-a81a-13eee60bd514
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/945eccf8-ea7f-4180-99fa-cf133228047c
 
 **Follow Terminal Instructions**
 
-https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/9e77f331-b500-4d6d-a28e-63a2d014fe43
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/18223fd3-a9c0-4d88-8143-3afef965e073
 
 **Interact with Excel to fill out NWB metadata**
 
-https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/99d70ded-33ca-4591-bd27-08faba503e54
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/981d649c-72a7-43f9-b31c-cf4bde871a3b
 
 **Use Excel to define metadata about recording devices**
 
-https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/313aaff0-d312-45bb-9d39-9fd248691356
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/fc78bfa9-50f8-45a6-8d78-fa60972091f3
 
 **Watch Terminal window to monitor progress**
 
-https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/829c7a23-4064-4639-8181-4226cb99b33c
+https://github.com/JohnStout/hernan-lab-to-nwb/assets/46092030/84309878-348a-4157-9867-d1133f7c406d
 
 **Important Details Regarding Credit** 
 
-These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichtors CatalystNeuro team.
+These packages/sources were used directly or modified. Neuralynx .nvt file reader from Ben Dichters CatalystNeuro team.
 * neo: https://github.com/NeuralEnsemble/python-neo
 * CatalystNeuro: https://github.com/catalystneuro
 
