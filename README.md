@@ -63,7 +63,7 @@ from hernan_lab_to_nwb.converters import convert
 Enter directory
 
 ```
-dir = "YOUR DATA DIRECTORY GOES IN REPLACEMENT OF THESE WORDS"
+dir = r' your directory '
 ```
 
 IF MINISCOPE:
