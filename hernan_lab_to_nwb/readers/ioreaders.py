@@ -719,7 +719,7 @@ class read_miniscope(base):
 # pinnacle data
 class read_pinnacle(base):
 
-    print("PINNACLE CODE DOES NOT ALIGN TIMES TO MOVIE")
+    #print("PINNACLE CODE DOES NOT ALIGN TIMES TO MOVIE")    
 
     def write_nwb(self):
 
@@ -925,3 +925,17 @@ def save_nwb(folder_path: str, data_name: str = 'nwbfile.nwb', nwb_file=None):
         io.write(nwb_file)
 
     print("Save .nwb file to: ",os.path.join(folder_path,data_name))
+
+def read_edf(dir: str):
+    '''
+    Reads .edf files
+        Args:
+            >>> dir: directory with the .edf extension
+
+        Returns:
+            signals: signal data
+            signal_headers: header files
+    '''
+    # this will be a loop
+    dir_edf = os.path.join(dir)
+    signals, signal_headers, header = highlevel.read_edf(dir)    
