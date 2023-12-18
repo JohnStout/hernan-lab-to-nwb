@@ -720,8 +720,7 @@ class read_miniscope(base):
 class read_pinnacle(base):
 
     #print("PINNACLE CODE DOES NOT ALIGN TIMES TO MOVIE")    
-
-    def write_nwb(self):
+    def write_nwb(self, edf_file = None):
 
         # reassign dir
         dir = self.folder_path
@@ -735,9 +734,13 @@ class read_pinnacle(base):
         nwb_table['lab_name']=[]
         excel_dir, nwb_table = nwb_utils.pandas_excel_interactive(dir = dir, df = nwb_table, save_name = 'nwb_template.xlsx')
 
-        # automation begins...
-        dir_contents = sorted(os.listdir(dir))
-        edf_names = [i for i in dir_contents if '.edf' in i]
+        # test if .edf is in the directory already
+        if edf_file is None:
+            # automation begins...
+            dir_contents = sorted(os.listdir(dir))
+            edf_names = [i for i in dir_contents if '.edf' in i]
+        else:
+            edf_names = [edf_file]
 
         # we could throw a time marker into the dataset through annotation on the EEG
         # and through on the video side, we can use those annotations as time markers to align data
@@ -888,6 +891,7 @@ class read_pinnacle(base):
 
                 # validate file
                 validate_nwb(nwbpath=dir_save)
+
 
 #%%  some general helper functions for nwb stuff
 
