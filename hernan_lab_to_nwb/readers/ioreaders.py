@@ -11,6 +11,10 @@ from datetime import datetime
 from dateutil import tz
 from pathlib import Path
 from uuid import uuid4
+import itertools
+
+from neo.rawio.neuralynxrawio import NeuralynxRawIO as neo_rawio
+from neo.io.neuralynxio import NeuralynxIO as neo_io
 
 import re
 import os
@@ -73,7 +77,7 @@ class read_nlx(base):
         self.read_header()
         self.read_vt()
 
-    def read_ephys(self):
+    def read_ephys(self, opts = None):
 
         """
         A method to read electrophysiology data acquired by Neuralynx Cheetah in DECODE lab
@@ -438,6 +442,8 @@ class read_nlx(base):
 
         # read data
         blks = NeuralynxIO(filename=filename, keep_original_times=True).read(lazy=False) # blocks       
+        blks = neo_io(filename=filename, keep_original_times=True).read(lazy=False) # blocks       
+        
         if len(blks) > 1:
             TypeError("Blocks exceeding size 1. This indicates that multiple sessions detected. The following code will be terminated.")
 
@@ -449,12 +455,19 @@ class read_nlx(base):
         if len(blk.segments) > 1:
             TypeError("CODE DOES NOT HANDLE MULTIPLE BLOCKS - FIX")
         else:
-            event_dict = blk.segments[0].events[0].__dict__
-            event_strings = event_dict['_labels']
-            event_times = blk.segments[0].events[0].times.magnitude
+            events = []; times = []
+            for blkev in range(len(blk.segments[0].events)):
+                event_dict = blk.segments[0].events[blkev].__dict__
+                events.append(event_dict['_labels'])
+                times.append(blk.segments[0].events[blkev].times.magnitude)
+            #appeend and sort
+            event_strings = list(itertools.chain(*events))
+            event_times = list(itertools.chain(*times))
+        sorted(event_times)
 
-        self.event_strings = event_strings
-        self.event_times = event_times
+        # get the event strings sorted by event times
+        self.event_strings, self.event_times = sortXbyY(x = event_strings, y = event_times)
+
         self.history.append("event_strings: Event variables during recordings (in written format)")
         self.history.append("event_times: Event variables during recordings (in seconds)")
 
@@ -1077,3 +1090,13 @@ def read_movie(movie_name: str):
 def dsearchn(x, v):
     z=np.atleast_2d(x)-np.atleast_2d(v).T
     return np.where(np.abs(z).T==np.abs(z).min(axis=1))[0]
+
+def sortXbyY(x,y):
+    '''
+    Args:
+        x: list to sort
+        y: list to sort by
+    '''
+    y_new, x_new = zip(*sorted(zip(y, x)))
+
+    return x_new, y_new
