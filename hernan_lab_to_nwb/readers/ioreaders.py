@@ -13,9 +13,6 @@ from pathlib import Path
 from uuid import uuid4
 import itertools
 
-from neo.rawio.neuralynxrawio import NeuralynxRawIO as neo_rawio
-from neo.io.neuralynxio import NeuralynxIO as neo_io
-
 import re
 import os
 import pandas as pd
@@ -175,9 +172,9 @@ class read_nlx(base):
                     # do a search for starting/stopping recordings
                     counter=0; start_times = []; end_times = []
                     for i in self.event_strings:
-                        if 'start' in i.lower():
+                        if 'starting recording' in i.lower():
                             start_times.append(self.event_times[counter])
-                        elif 'stop' in i.lower():
+                        elif 'stopping recording' in i.lower():
                             end_times.append(self.event_times[counter])
                         #print(counter)
                         counter+=1
@@ -442,7 +439,7 @@ class read_nlx(base):
 
         # read data
         blks = NeuralynxIO(filename=filename, keep_original_times=True).read(lazy=False) # blocks       
-        blks = neo_io(filename=filename, keep_original_times=True).read(lazy=False) # blocks       
+        #blks = neo_io(filename=filename, keep_original_times=True).read(lazy=False) # blocks       
         
         if len(blks) > 1:
             TypeError("Blocks exceeding size 1. This indicates that multiple sessions detected. The following code will be terminated.")
@@ -463,7 +460,6 @@ class read_nlx(base):
             #appeend and sort
             event_strings = list(itertools.chain(*events))
             event_times = list(itertools.chain(*times))
-        sorted(event_times)
 
         # get the event strings sorted by event times
         self.event_strings, self.event_times = sortXbyY(x = event_strings, y = event_times)
@@ -518,8 +514,8 @@ class read_nlx(base):
         #%% 
 
         # get start and stop times, according to the self.event_strings data
-        times_start = [self.event_times[i] for i in range(len(self.event_strings)) if "start" in self.event_strings[i].lower()]
-        times_stop  = [self.event_times[i] for i in range(len(self.event_strings)) if "stop" in self.event_strings[i].lower()]
+        times_start = [self.event_times[i] for i in range(len(self.event_strings)) if "starting recording" in self.event_strings[i].lower()]
+        times_stop  = [self.event_times[i] for i in range(len(self.event_strings)) if "stopping recording" in self.event_strings[i].lower()]
 
         for i in range(len(times_start)):
             nwbfile.add_epoch(times_start[i], times_stop[i], ["rec"+str(i)])
@@ -530,13 +526,23 @@ class read_nlx(base):
         #%% before moving forward, remove any rows set to be removed in the pandas array
                
         # remove any rows of the pandas array if the inclusion is set to False
-        rem_data_csc = self.csc_grouping_table['Inclusion'][self.csc_grouping_table['Inclusion']==False].index.tolist()
-        rem_data_tt = self.tt_grouping_table['Inclusion'][self.tt_grouping_table['Inclusion']==False].index.tolist()
+        try:
+            rem_data_csc = self.csc_grouping_table['Inclusion'][self.csc_grouping_table['Inclusion']==False].index.tolist()
+            if len(rem_data_csc) > 1:
+                self.csc_grouping_table=self.csc_grouping_table.drop(index=rem_data_csc)   
+                print("Removing:\n",self.csc_grouping_table.iloc[rem_data_csc].Name) 
+            self.csc_grouping_table=self.csc_grouping_table.reset_index()       
+        except:
+            pass
+        try:
+            rem_data_tt = self.tt_grouping_table['Inclusion'][self.tt_grouping_table['Inclusion']==False].index.tolist()
+            if len(rem_data_tt) > 1:
+                self.tt_grouping_table=self.tt_grouping_table.drop(index=rem_data_tt)
+                print("Removing:\n",self.tt_grouping_table.iloc[rem_data_tt].Name)
+            self.tt_grouping_table = self.tt_grouping_table.reset_index()
+        except:
+            pass
 
-        print("Removing:\n",self.tt_grouping_table.iloc[rem_data_tt].Name,self.csc_grouping_table.iloc[rem_data_csc].Name)
-
-        self.csc_grouping_table=self.csc_grouping_table.drop(index=rem_data_csc)
-        self.tt_grouping_table=self.tt_grouping_table.drop(index=rem_data_tt)
 
         #%% Add electrode column and prepare for adding actual data
 
@@ -551,16 +557,20 @@ class read_nlx(base):
         #self.csc_grouping_table.reset_index(inplace=True)
         
         # now create electrode groups according to brain area and electrode grouping factors
-        for bi in brain_regions: # loop over brain regions
+        try:
+            for bi in brain_regions: # loop over brain regions
 
-            for ei in electrode_group: # loop over tetrode or probe
+                for ei in electrode_group: # loop over tetrode or probe
 
-                # create an electrode group for a given tetrode
-                electrode_group = nwbfile.create_electrode_group(
-                    name='Tetrode{}'.format(ei),
-                    description='Raw tetrode data',
-                    device=device,
-                    location=bi)         
+                    # create an electrode group for a given tetrode
+                    electrode_group = nwbfile.create_electrode_group(
+                        name='Tetrode{}'.format(ei),
+                        description='Raw tetrode data',
+                        device=device,
+                        location=bi)     
+        except:
+            print("Failed to create electrode group. You may only have one channel per group.")
+            pass
 
         # loop over the pandas array for csc data, then assign the data accordingly
         electrode_counter = 0
@@ -580,6 +590,8 @@ class read_nlx(base):
 
         #%% NOW we work on adding our data. For LFPs, we store in ElectricalSeries object
 
+        #TODO: MAYBE ADD a try statement for LFP 
+        
         # create dynamic table
         all_table_region = nwbfile.create_electrode_table_region(
             region=list(range(electrode_counter)),  # reference row indices 0 to N-1
@@ -617,27 +629,33 @@ class read_nlx(base):
         nwbfile.add_acquisition(raw_electrical_series)
 
         #%% Add spiketimes
-        nwbfile.add_unit_column(name="quality", description="sorting quality")
 
         # get unit IDs for grouping
-        unit_ids = self.tt_grouping_table.Name.tolist()
-        self.tt_grouping_table.set_index('Name', inplace=True) # set Name as the index
-        #self.tt_grouping_table.reset_index(inplace=True)
+        try:
+            unit_ids = self.tt_grouping_table.Name.tolist()
+            self.tt_grouping_table.set_index('Name', inplace=True) # set Name as the index
+            #self.tt_grouping_table.reset_index(inplace=True)
 
-        unit_num = 0
-        for i in unit_ids:
-            #print(self.tt_data[i])
-            tetrode_num = self.tt_grouping_table.loc[i].TetrodeGroup
-            brain_reg = self.tt_grouping_table.loc[i].BrainRegion
-            for clusti in self.tt_data[i]:
-                #print(i+' '+clusti)
-                #clust_id = i.split('.ntt')[0]+'_'+clusti
-                nwbfile.add_unit(spike_times = self.tt_data[i][clusti],
-                                 electrode_group = nwbfile.electrode_groups['Tetrode'+str(tetrode_num)], 
-                                 quality = "good",
-                                 id = unit_num)
-                unit_num += 1
-        nwbfile.units.to_dataframe()
+            # add unit column if units are present
+            nwbfile.add_unit_column(name="quality", description="sorting quality")
+
+            unit_num = 0
+            for i in unit_ids:
+                #print(self.tt_data[i])
+                tetrode_num = self.tt_grouping_table.loc[i].TetrodeGroup
+                brain_reg = self.tt_grouping_table.loc[i].BrainRegion
+                for clusti in self.tt_data[i]:
+                    #print(i+' '+clusti)
+                    #clust_id = i.split('.ntt')[0]+'_'+clusti
+                    nwbfile.add_unit(spike_times = self.tt_data[i][clusti],
+                                    electrode_group = nwbfile.electrode_groups['Tetrode'+str(tetrode_num)], 
+                                    quality = "good",
+                                    id = unit_num)
+                    unit_num += 1
+            nwbfile.units.to_dataframe()
+        except:
+            print("Units not added to NWB file")
+            pass
 
         # -- Save NWB file -- #
         save_nwb(folder_path=self.folder_path, nwb_file=nwbfile)
@@ -1011,7 +1029,6 @@ class read_pinnacle(base):
                 # validate file
                 validate_nwb(nwbpath=dir_save)
 
-
 #%%  some general helper functions for nwb stuff
 
 def validate_nwb(nwbpath: str):
@@ -1099,4 +1116,4 @@ def sortXbyY(x,y):
     '''
     y_new, x_new = zip(*sorted(zip(y, x)))
 
-    return x_new, y_new
+    return list(x_new), list(y_new)
