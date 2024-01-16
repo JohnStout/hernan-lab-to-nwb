@@ -40,11 +40,12 @@ class base():
             print("OS windows detected")
 
         # search for extension in your folder path and use the folder, not the file
-        if '.' in folder_path:
-            self.folder_path = self.slash.join(folder_path.split('.')[0].split(self.slash)[0:-1])
-        else:
+        # BUG: fix this. Find way to identify extensions rather than '.'
+        #if '.' in folder_path:
+           # self.folder_path = self.slash.join(folder_path.split('.')[0].split(self.slash)[0:-1])
+        #else:
             # define a folder path
-            self.folder_path = folder_path
+        self.folder_path = folder_path
         self.history.append("folder_path: directory of data - added")
 
         # assign session ID according to your folder path
