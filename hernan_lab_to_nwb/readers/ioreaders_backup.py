@@ -96,10 +96,6 @@ class read_nlx(base):
         # TODO: Make events into a dictionary
         self.read_events()
 
-        # opts
-        if opts is None:
-            opts = ['CSC','TT']
-
         # group data according to extension, then by naming
         split_contents = [i.split('.') for i in self.dir_contents]
 
@@ -164,7 +160,7 @@ class read_nlx(base):
 
                 # organize data accordingly 
                 # it is VERY important that you only include LFP times between starting/stopping recording
-                if 'CSC' in groupi and 'CSC' in opts: # CSC files referenced to a different channel
+                if 'CSC' in groupi: # CSC files referenced to a different channel
                     
                     # doesn't matter how many blocks there are, concatenate, then separate by events
                     
@@ -212,7 +208,7 @@ class read_nlx(base):
 
                 # Notice that all values are duplicated. This is because tetrodes record the same spike times.
                 # It is the amplitude that varies, which is not captured here, despite calling magnitude.
-                elif 'TT' in groupi and 'TT' in opts: # .ntt TT files with spike data
+                elif 'TT' in groupi: # .ntt TT files with spike data
 
                     if len(blk.segments) > 1:
                         InterruptedError("Detected multiple stop/starts in spike times. No code available to collapse recordings. Please add code")
@@ -478,11 +474,10 @@ class read_nlx(base):
         self.header = header_dict
         self.history.append("header: example header from the filepath of a .ncs file")
 
-    def write_nwb(self, metadata = None):
+    def write_nwb(self):
 
         """
         All .ncs files will be taken in
-        >>> metadata: pandas array of metadata. Keep set to None unless you know exactly what metadata works
 
         """
 
@@ -494,13 +489,10 @@ class read_nlx(base):
 
         # TODO: THIS IS A GENERAL FUNCTION THAT will be supported by all write_nwb functions
         # create NWB template interactivately
-        if metadata is None:
-            template_dir, df_temp = nwb_utils.nwb_to_excel_template(self.folder_path)      
-            print("nwb_template.xlsx written to", self.folder_path)
-            input("Please fill in the nwb_template.xlsx sheet, then press any key to continue...")
-            nwbfile, device = nwb_utils.template_to_nwb(template_dir = template_dir)
-        else:
-            nwbfile, device = nwb_utils.template_to_nwb(template_data = metadata)
+        template_dir, df_temp = nwb_utils.nwb_to_excel_template(self.folder_path)      
+        print("nwb_template.xlsx written to", self.folder_path)
+        input("Please fill in the nwb_template.xlsx sheet, then press any key to continue...")
+        nwbfile, device = nwb_utils.template_to_nwb(template_dir = template_dir)
 
         #%% 
 
