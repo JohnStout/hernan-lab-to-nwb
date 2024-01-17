@@ -207,8 +207,8 @@ class read_nlx(base):
                     # add sampling rate if available
 
                     #TODO: add fs for each csc channel and segment!!!
-                    temp_fs = str(blk.segments[0].analogsignals[0].sampling_rate)
-                    self.csc_data_fs[datai] = csc_fs
+                    temp_fs = float(blk.segments[0].analogsignals[0].sampling_rate.magnitude)
+                    self.csc_data_fs[datai] = temp_fs
                     csc_added = True
 
                 # Notice that all values are duplicated. This is because tetrodes record the same spike times.
@@ -400,8 +400,8 @@ class read_nlx(base):
                     # add sampling rate if available
 
                     #TODO: add fs for each csc channel and segment!!!
-                    temp_fs = str(blk.segments[0].analogsignals[0].sampling_rate)
-                    self.csc_data_fs[datai] = csc_fs
+                    temp_fs = float(blk.segments[0].analogsignals[0].sampling_rate.magnitude)
+                    self.csc_data_fs[datai] = temp_fs
                     csc_added = True        
 
     def read_vt(self):
@@ -624,7 +624,7 @@ class read_nlx(base):
             timestamps = self.csc_times, # need timestamps
             electrodes=all_table_region,
             #starting_time=float(np.array(self.csc_times[0])),  # timestamp of the first sample in seconds relative to the session start time
-            #rate=fs,  # in Hz
+            #rate=self.csc_data_fs[0],  # in Hz
         )
         nwbfile.add_acquisition(raw_electrical_series)
 
@@ -660,6 +660,8 @@ class read_nlx(base):
         # -- Save NWB file -- #
         save_nwb(folder_path=self.folder_path, nwb_file=nwbfile)
         validate_nwb(nwbpath = os.path.join(self.folder_path,'nwbfile.nwb'))
+        
+        return nwbfile, device
 
 # miniscope data
 class read_miniscope(base):
