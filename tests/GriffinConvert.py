@@ -147,11 +147,7 @@ for ratname in rats_list[1]:
             for i in range(len(ephys_object.csc_grouping_table['TetrodeGroup'])):
                 # fill out tetrode group
                 ephys_object.csc_grouping_table['TetrodeGroup'][i] = i+1
-                # fill out sampling rate
-                if ratname is '21-55':
-                    ephys_object.csc_grouping_table['SamplingRate'][i] = 32000.0
-                else:
-                    ephys_object.csc_grouping_table['SamplingRate'][i] = 2000.0
+
                 # fill out brainregion
                 if 'HPC' in ephys_object.csc_grouping_table['Name'][i]:
                     ephys_object.csc_grouping_table['BrainRegion'][i] = 'HPC'
@@ -159,7 +155,7 @@ for ratname in rats_list[1]:
                     ephys_object.csc_grouping_table['BrainRegion'][i] = 'PFC'
                 elif 'Str' in ephys_object.csc_grouping_table['Name'][i]:
                     ephys_object.csc_grouping_table['BrainRegion'][i] = 'dStriatum'        
-                elif 'Cer' in ephys_object.csc_grouping_table['Name'][i]:
+                elif 'Cer' in ephys_object.csc_grouping_table['Name'][i] or 'ref' in ephys_object.csc_grouping_table['Name'][i]:
                     ephys_object.csc_grouping_table['BrainRegion'][i] = 'Cerebellum_reference'
 
             # write NWB file
