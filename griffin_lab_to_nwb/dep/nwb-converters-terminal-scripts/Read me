@@ -1,0 +1,15 @@
+Terminal scripts
+
+this folder will have simple scripting functions so that a user simply runs a 1-liner in the terminal to conver their data to nwb
+
+Instructions:
+
+1) Download anaconda3
+2) Open terminal and enter:
+    conda create -n decode_lab_env python=3.9
+    conda activate decode_lab_env
+    git clone https://github.com/JohnStout/hernan-lab-to-nwb
+    conda deactivate
+    conda activate
+    cd hernan-lab-to-nwb
+    pip install -e .
